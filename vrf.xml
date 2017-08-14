@@ -1,0 +1,12 @@
+<native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+  <vrf>
+  	{% for vrf in params['vrfs'] %}
+    <definition>
+      <name>{{ vrf['name'] }}</name>
+		<address-family>
+            <ipv4/>
+		</address-family>
+    </definition>
+    {% endfor %}
+  </vrf>
+</native>

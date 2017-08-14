@@ -1,0 +1,74 @@
+<native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+  <router>
+    <lisp xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-lisp">
+      <encapsulation>
+        <vxlan/>
+      </encapsulation>
+      <disable-ttl-propagate/>
+      <ipv4>
+        <itr>
+          <map-resolver>
+            <ip-addr>{{ params['border'] }}</ip-addr>
+          </map-resolver>
+        </itr>
+        <etr>
+          <map-server>
+            <ip-addr>{{ params['border'] }}</ip-addr>
+            <key>
+              <pwd>uci</pwd>
+            </key>
+          </map-server>
+        </etr>
+        <etr-enable>
+          <etr/>
+        </etr-enable>
+        <map-resolver/>
+        <map-server/>
+        <proxy-etr/>
+        <proxy-itr>{{ params['border'] }}</proxy-itr>
+        <sgt/>
+      </ipv4>
+      <locator-table>
+        <default/>
+      </locator-table>
+      <eid-table>
+        <instance-list>
+          <instance-id>0</instance-id>
+          <default/>
+        </instance-list>
+        {% for vrf in params['vrfs'] %}
+          <instance-list>
+            <instance-id>{{ vrf['id'] }}</instance-id>
+            <vrf>{{ vrf['name'] }}</vrf>
+            {% for pool in vrf['pools'] %}
+              <map-cache>
+                <eid-prefix>{{ pool['subnet'] }}</eid-prefix>
+                <map-request/>
+              </map-cache>
+            {% endfor %}
+          </instance-list>
+        {% endfor %}
+      </eid-table>
+      <site>
+        <sname>site_uci</sname>
+        <authentication-key>
+          <unc-pwd>uci</unc-pwd>
+        </authentication-key>
+        <description>map-server configured from python</description>  
+          <eid-prefix>
+          {% for vrf in params['vrfs'] %}
+            <instance-id>
+              <id>{{ vrf['id'] }}</id>
+              {% for pool in vrf['pools'] %}
+                <prefix>
+                  <prefix>{{ pool['subnet'] }}</prefix>
+                  <accept-more-specifics/>
+                </prefix>
+              {% endfor %}
+            </instance-id>
+          {% endfor %}
+          </eid-prefix>
+      </site>
+    </lisp>
+  </router>
+</native>

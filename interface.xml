@@ -1,0 +1,66 @@
+<native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+  <interface>
+      {% for ifnum in range(params['min'],params['max']) %}
+      <{{ params['type'] }}>
+      <name>{{ params['base'] }}{{ ifnum }}</name>
+      <switchport>
+        <mode xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-switch">
+          <access/>
+        </mode>
+        <voice xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-switch">
+          <vlan>
+            <vlan>{{ params['voice_vlan'] }}</vlan>
+          </vlan>
+        </voice>
+      </switchport>
+      <authentication xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-sanet">
+        <control-direction>in</control-direction>
+        <event>
+          <server>
+            <dead>
+              <action>
+                <authorize>
+                  <vlan>{{ params['server_dead_vlan'] }}</vlan>
+                  <voice/>
+                </authorize>
+              </action>
+            </dead>
+          </server>
+        </event>
+        <host-mode>multi-auth</host-mode>
+        <order>
+          <dot1x/>
+          <mab/>
+        </order>
+        <priority>
+          <dot1x/>
+          <mab/>
+        </priority>
+        <port-control>auto</port-control>
+        <periodic/>
+        <timer>
+          <inactivity>
+            <server>
+              <dynamic/>
+            </server>
+          </inactivity>
+          <reauthenticate>
+            <server/>
+          </reauthenticate>
+        </timer>
+      </authentication>
+      <dot1x xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-dot1x">
+        <pae>authenticator</pae>
+        <timeout>
+          <tx-period>10</tx-period>
+        </timeout>
+      </dot1x>
+      <spanning-tree xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-spanning-tree">
+        <portfast/>
+      </spanning-tree>
+      <description>Configured_From_NETCONF</description>
+      <mab xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-sanet"/>
+    </{{ params['type'] }}>
+    {% endfor %}
+  </interface>
+</native>

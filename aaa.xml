@@ -1,0 +1,80 @@
+  <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+  <aaa>
+    <group xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-aaa">
+      <server>
+        <radius>
+          <name>sda-radius-group</name>
+          <server>
+            <name>
+              <name>sda-radius</name>
+            </name>
+          </server>
+          <ip>
+            <radius>
+              <source-interface>Loopback0</source-interface>
+            </radius>
+          </ip>
+        </radius>
+      </server>
+    </group>
+    <authentication xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-aaa">
+      <dot1x>
+        <default>
+          <group>sda-radius-group</group>
+        </default>
+      </dot1x>
+      <enable>
+        <default>
+          <enable/>
+        </default>
+      </enable>
+      <login>
+        <name>default</name>
+        <a1>
+          <local/>
+        </a1>
+      </login>
+    </authentication>
+    <authorization xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-aaa">
+      <exec>
+        <name>default</name>
+        <a1>
+          <local/>
+        </a1>
+      </exec>
+      <network>
+        <id>default</id>
+        <a1>
+          <group>sda-radius-group</group>
+        </a1>
+      </network>
+      <network>
+        <id>sda-cts-list</id>
+        <a1>
+          <group>sda-radius-group</group>
+        </a1>
+      </network>
+    </authorization>
+  </aaa>
+  <radius>
+    <server xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-aaa">
+      <id>sda-radius</id>
+      <address>
+        <ipv4>
+          <host>{{ params['radius_server'] }}</host>
+          <auth-port>1812</auth-port>
+          <acct-port>1813</acct-port>
+        </ipv4>
+      </address>
+      <pac>
+        <key>
+          <key>dnalab1</key>
+        </key>
+      </pac>
+    </server>
+  </radius>
+  <dot1x >
+    <system-auth-control xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-dot1x"/>
+  </dot1x>
+</native>
+

@@ -1,0 +1,20 @@
+<native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+  <interface>
+ {% for ifnum in range(params['min'],params['max']) %}
+    <{{ params['type'] }}>
+    <name>{{ params['base'] }}{{ ifnum }}</name>
+    <description>Configured_From_NETCONF</description>
+    <switchport xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-switch">
+      <mode>
+        <access/>
+      </mode>
+      <voice>
+        <vlan>
+          <vlan>{{ params['voice_vlan'] }}</vlan>
+        </vlan>
+      </voice>
+    </switchport>
+  </{{ params['type'] }}>
+  {% endfor %}
+ </interface>
+</native>

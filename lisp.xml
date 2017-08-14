@@ -1,0 +1,103 @@
+<native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+<router>
+  <lisp xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-lisp">
+<service>
+            <ipv4>
+              <itr>
+                <map-resolver>
+                  <ip-addr>{{ params['border'] }}</ip-addr>
+                </map-resolver>
+              </itr>
+              <itr-enable>
+                <itr/>
+              </itr-enable>
+              <etr-enable>
+                <etr/>
+              </etr-enable>
+              <etr>
+                <map-server>
+                  <ip-addr>{{ params['border'] }}</ip-addr>
+                  <key>
+                    <key-pwd>
+                      <unc-pwd>uci</unc-pwd>
+                    </key-pwd>
+                  </key>
+                </map-server>
+              </etr>
+              <sgt/>
+              <use-petr>
+                <locator-address>{{ params['border'] }}</locator-address>
+              </use-petr>
+            </ipv4>
+            <ethernet>
+              <itr>
+                <map-resolver>
+                  <ip-addr>{{ params['border'] }}</ip-addr>
+                </map-resolver>
+              </itr>
+              <itr-enable>
+                <itr/>
+              </itr-enable>
+              <etr-enable>
+                <etr/>
+              </etr-enable>
+              <etr>
+                <map-server>
+                  <ip-addr>{{ params['border'] }}</ip-addr>
+                  <key>
+                    <key-pwd>
+                      <unc-pwd>uci</unc-pwd>
+                    </key-pwd>
+                  </key>
+                </map-server>
+              </etr>
+            </ethernet>
+          </service>
+
+    <locator-set>
+      <name>rloc1</name>
+      <IPv4-interface>
+        <name>Loopback0</name>
+        <priority>10</priority>
+        <weight>10</weight>
+      </IPv4-interface>
+    </locator-set>
+
+    <instance-container>
+ <instance-list>
+              <instance-id>4097</instance-id>
+              <service>
+                <ipv4>
+                  <eid-table>
+                    <default/>
+                  </eid-table>
+                </ipv4>
+              </service>
+            </instance-list>
+            {% for vrf in params['vrfs'] %}
+            <instance-list>
+              <instance-id>{{ vrf['id'] }}</instance-id>
+              {% for pool in vrf['pools'] %}
+              <dynamic-eid>
+                <name>{{ pool['lmd'] }}</name>
+                <database-mapping>
+                  <ipv4-prefix>
+                    <eid-prefix>{{ pool['subnet'] }}</eid-prefix>
+                    <locator-set>rloc1</locator-set>
+                  </ipv4-prefix>
+                </database-mapping>
+              </dynamic-eid>
+              {% endfor %}
+              <service>
+                <ipv4>
+                  <eid-table>
+                    <vrf>{{ vrf['name'] }}</vrf>
+                  </eid-table>
+                </ipv4>
+              </service>
+            </instance-list>
+            {% endfor %}
+</instance-container>
+
+  </lisp></router>
+</native>

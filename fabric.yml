@@ -1,0 +1,40 @@
+---
+
+border:  '192.168.100.100'
+border_user:  'cisco'
+border_pass:  'cisco'
+
+edges:
+  - ip: '10.1.1.4'
+    username: 'admin'
+    password: 'admin'
+
+base_vlan: 3000
+base_instance_id: 10
+radius_server:  '172.26.204.121'
+
+host-ifs:
+  type: "GigabitEthernet"
+  base: "1/0/"
+  min: 1
+  max: 5
+  voice_vlan: 4000
+  server_dead_vlan: 3999
+
+vrfs:
+  - name: Campus
+    pools:
+    - subnet: '172.16.101.0/24'
+      gw: '172.16.101.254'
+      helper:  '172.16.101.254'
+    - subnet: '172.16.201.0/24'
+      gw: '172.16.201.254'
+      helper:  '172.16.201.254'
+
+  - name: Guest
+    pools:
+    - subnet: '172.16.250.0/24'
+      gw: '172.16.250.254'
+      helper:  '172.16.250.254'
+
+
